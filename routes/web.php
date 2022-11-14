@@ -23,7 +23,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/payment/create', [PaymentController::class, 'create'])->name('payment.create');
+Route::get('', [PaymentController::class, 'create'])->name('payment.create');
 Route::post('/payment/store', [PaymentController::class, 'store'])->name('payment.store');
 Route::get('/payment/{hash}', [PaymentController::class, 'request'])->name('payment.request');
 

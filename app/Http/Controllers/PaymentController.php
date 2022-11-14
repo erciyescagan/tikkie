@@ -23,11 +23,13 @@ class PaymentController extends Controller
     }
 
 
-    public function store(Request $request)
-    {
+    public function store(Request $request){
+
+
+
         $requestArr = [
             'amount'=> $request->amount,
-            'from' => Auth::user()->email,
+            'from' => $request->user('api')->email,
         ];
 
         $payment = new Payment();
@@ -37,9 +39,9 @@ class PaymentController extends Controller
         $payment->expiration_date = null;
         $payment->is_expired = 0;
         $payment->is_valid = 0;
-        if ($payment->save()){
-            Auth::user()->payments()->attach($payment->id);
-        }
+        $payment->user_id = $request->user('api')->id;
+
+        return $payment;
     }
 
 
