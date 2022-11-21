@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('is_expired');
             $table->boolean('is_valid');
             $table->integer('user_id');
+            $table->tinyInteger('type');
             $table->timestamps();
         });
     }
