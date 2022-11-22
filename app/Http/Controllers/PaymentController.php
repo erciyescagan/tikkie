@@ -7,37 +7,31 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
-    protected $amount;
-    protected $type; // 0 => ex. Payee decide the amount, 2 => Payer decide the amount,3 => Total Amount / Number of Person
+    private $json, $user, $link;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
-        $this->amount = 0;
-        $this->type = null;
-
+        $this->setJson($request);
+        $this->user = $request->user();
     }
 
-    public function store(Request $request){
-
-        $this->setJson($request);
-
-        $data = $this->getJson();
-        $user = $request->user();
-        $bytes = openssl_random_pseudo_bytes(16); // alternatively read from /dev/urandom
+    public function store(){
+        $user = $this->user;
 
         $payment = new Payment();
-        $payment->amount = $data['amount'];
-        $payment->link = env('APP_URL').'/payment/'.base64_encode($bytes);
+        $payment->amount = $this->getAmount();
+        $payment->link = $this->getLink();
         $payment->status = 'request';
         $payment->expiration_date = null;
-        $payment->type = $type;
+        $payment->type = $this->getType();
         $payment->is_expired = 0;
         $payment->is_valid = 0;
         $payment->user_id = $user->id;
-
         return $payment;
     }
 
@@ -65,33 +59,26 @@ class PaymentController extends Controller
 
     }
 
+    private function setJson($request){$this->json = $request->all();}
 
-    private function setAmount($request){
-        $this->amount = $request->amount;
+    private function getJson() : array {return $this->json;}
+
+    private function setAmount(){$this->amount = $this->getJson()['amount'];}
+
+    private function getAmount() : float {$this->setAmount();return $this->amount;}
+
+    private function setType(){$this->type = $this->getJson()['type'];}
+
+    private function getType() : int {$this->setType();return $this->type;}
+
+    private function setLink()  {
+        $bytes = Str::random(36);
+        $this->link = url('/payments/'.$bytes);
     }
 
-    private function getAmount(){
-        return $this->amount;
-    }
-
-    private function setType($request){
-        $this->type = $request->type;
-    }
-
-    private function getType(){
-        return $this->type;
-    }
-
-    private function setJson($request){
-        $this->setAmount($request);
-        $this->setType($request);
-    }
-
-    private function getJson(){
-        $amount = $this->getAmount();
-        $type = $this->getType();
-        return['amount' => $amount, $type => $type];
-    }
+    private function getLink() :
+    \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\UrlGenerator|string
+    {$this->setLink(); return $this->link;}
 
     private function calculateAmount(){
         //TODO: amount calculator according to payment type.
