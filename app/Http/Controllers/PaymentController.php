@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\User;
+use http\Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -12,19 +14,27 @@ use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
-    private $json, $user, $link;
+    private $json, $user, $link, $number_of_people, $amount, $type;
 
     public function __construct(Request $request)
     {
+        $request->validate([
+            "type" => "numeric|max:2|min:0|required_without_all:number_of_people",
+            "amount" => "numeric|required",
+            "number_of_people" => "nullable|numeric|min:2|required_if:type,2"
+        ]);
+
         $this->setJson($request);
         $this->user = $request->user();
+        $this->calculateAmount($this->getType());
     }
 
     public function store(){
+
         $user = $this->user;
 
         $payment = new Payment();
-        $payment->amount = $this->getAmount();
+        $payment->amount = $this->amount;
         $payment->link = $this->getLink();
         $payment->status = 'request';
         $payment->expiration_date = null;
@@ -32,6 +42,9 @@ class PaymentController extends Controller
         $payment->is_expired = 0;
         $payment->is_valid = 0;
         $payment->user_id = $user->id;
+
+        //$payment->save();
+
         return $payment;
     }
 
@@ -71,6 +84,10 @@ class PaymentController extends Controller
 
     private function getType() : int {$this->setType();return $this->type;}
 
+    private function setNumberOfPeople(){$this->number_of_people = $this->getJson()['number_of_people'];}
+
+    private function getNumberOfPeople() :int {$this->setNumberOfPeople(); return $this->number_of_people;}
+
     private function setLink()  {
         $bytes = Str::random(36);
         $this->link = url('/payments/'.$bytes);
@@ -80,8 +97,20 @@ class PaymentController extends Controller
     \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\UrlGenerator|string
     {$this->setLink(); return $this->link;}
 
-    private function calculateAmount(){
-        //TODO: amount calculator according to payment type.
+    private function calculateAmount($type){
+        switch ($type){
+            case 0 :
+                $amount = $this->getAmount();
+                break;
+            case 1:
+                return null;
+            case 2:
+                $amount = $this->getAmount() / $this->getNumberOfPeople();
+                break;
+        }
+        $this->amount = $amount;
+        return $this->amount;
     }
+
 
 }
