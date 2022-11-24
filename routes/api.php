@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::post('/logout', [ApiAuthController::class, 'logout'])->name('logout.api');
 });
 
-Route::group(['middleware' =>'auth:api'], function (){
+Route::group(['middleware' => ['auth:api', 'cors', 'json.response']], function (){
     Route::post('/payment/store', [PaymentController::class, 'store']);
+    Route::post('/account/update', [AccountController::class, 'update']);
 });

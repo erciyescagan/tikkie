@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\Json;
 use App\Models\Payment;
 use App\Models\User;
 use http\Exception;
@@ -14,7 +15,7 @@ use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
-    private $json, $user, $link, $number_of_people, $amount, $type;
+    private $user, $link, $number_of_people, $amount, $type;
 
     public function __construct(Request $request)
     {
@@ -24,7 +25,7 @@ class PaymentController extends Controller
             "number_of_people" => "nullable|numeric|min:2|required_if:type,2"
         ]);
 
-        $this->setJson($request);
+        Json::setJson($request);
         $this->user = $request->user();
         $this->calculateAmount($this->getType());
     }
@@ -47,7 +48,6 @@ class PaymentController extends Controller
 
         return $payment;
     }
-
 
     public function request($hash)
     {
@@ -72,44 +72,38 @@ class PaymentController extends Controller
 
     }
 
-    private function setJson($request){$this->json = $request->all();}
 
-    private function getJson() : array {return $this->json;}
-
-    private function setAmount(){$this->amount = $this->getJson()['amount'];}
+    private function setAmount(){$this->amount = Json::getJson()['amount'];}
 
     private function getAmount() : float {$this->setAmount();return $this->amount;}
 
-    private function setType(){$this->type = $this->getJson()['type'];}
+    private function setType(){$this->type = Json::getJson()['type'];}
 
     private function getType() : int {$this->setType();return $this->type;}
 
-    private function setNumberOfPeople(){$this->number_of_people = $this->getJson()['number_of_people'];}
+    private function setNumberOfPeople(){$this->number_of_people = Json::getJson()['number_of_people'];}
 
     private function getNumberOfPeople() :int {$this->setNumberOfPeople(); return $this->number_of_people;}
 
-    private function setLink()  {
-        $bytes = Str::random(36);
-        $this->link = url('/payments/'.$bytes);
-    }
+    private function setLink() {$bytes = Str::random(36);$this->link = url('/payments/'.$bytes);}
 
     private function getLink() :
     \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\UrlGenerator|string
     {$this->setLink(); return $this->link;}
 
-    private function calculateAmount($type){
+    private function calculateAmount($type): void
+    {
         switch ($type){
             case 0 :
                 $amount = $this->getAmount();
                 break;
             case 1:
-                return null;
+                return;
             case 2:
                 $amount = $this->getAmount() / $this->getNumberOfPeople();
                 break;
         }
         $this->amount = $amount;
-        return $this->amount;
     }
 
 
