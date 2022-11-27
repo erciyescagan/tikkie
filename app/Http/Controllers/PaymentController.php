@@ -5,12 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\Json;
 use App\Models\Payment;
 use App\Models\User;
-use http\Exception;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class PaymentController extends Controller
@@ -37,7 +33,6 @@ class PaymentController extends Controller
         $payment = new Payment();
         $payment->amount = $this->amount;
         $payment->link = $this->getLink();
-        $payment->status = 'request';
         $payment->expiration_date = null;
         $payment->type = $this->getType();
         $payment->is_expired = 0;
@@ -47,6 +42,14 @@ class PaymentController extends Controller
         //$payment->save();
 
         return $payment;
+    }
+
+    public function received(){
+
+    }
+
+    public function expended(){
+
     }
 
     public function request($hash)
@@ -90,6 +93,7 @@ class PaymentController extends Controller
     private function getLink() :
     \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\UrlGenerator|string
     {$this->setLink(); return $this->link;}
+
 
     private function calculateAmount($type): void
     {

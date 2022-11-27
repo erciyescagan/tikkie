@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Auth\ApiAuthController;
+use App\Http\Controllers\DepositController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,4 +30,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 Route::group(['middleware' => ['auth:api', 'cors', 'json.response']], function (){
     Route::post('/payment/store', [PaymentController::class, 'store']);
     Route::post('/account/update', [AccountController::class, 'update']);
+    Route::post('/deposit', [DepositController::class, 'store']);
+    Route::get('/received', [TransactionController::class, 'received']);
+    Route::get('/expended', [TransactionController::class, 'expended']);
 });

@@ -12,21 +12,24 @@ class AccountController extends Controller
     private $user, $iban;
     public function __construct(Request $request)
     {
-        $request->validate([
-            "iban" => "starts_with:TR|required|size:26",
-        ]);
-
         $this->user = $request->user();
         Json::setJson($request);
 
     }
 
-    public function update(){
+    public function update(Request $request){
+        $request->validate([
+            "iban" => "starts_with:TR|required|size:26",
+        ]);
+
         $account = $this->user->account;
         $account->iban = $this->getIban();
         $account->wallet_balance = 0;
-        $account->save();
+        if($account->save()){
+            return response()->json(['message' => 'You have been created your wallet!'], 200);
+        }
     }
+
 
     private function setIban(){$this->iban = Json::getJson()['iban'];}
 

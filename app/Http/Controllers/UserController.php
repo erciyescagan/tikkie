@@ -16,4 +16,5 @@ class UserController extends Controller
         $account = Auth::user()->account;
         return view('user.account', ['account' => $account]);
     }
+
 }

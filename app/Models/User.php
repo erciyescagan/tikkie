@@ -49,4 +49,11 @@ class User extends Authenticatable
     public function payments(){
         return $this->hasMany(Payment::class, 'user_id');
     }
+
+    public function received(){
+        return $this->hasMany(Transaction::class, 'to');
+    }
+    public function expended(){
+        return $this->hasMany(Transaction::class, 'from');
+    }
 }

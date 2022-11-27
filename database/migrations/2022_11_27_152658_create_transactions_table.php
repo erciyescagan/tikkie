@@ -13,15 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->float('amount');
-            $table->string('link');
-            $table->dateTime('expiration_date')->nullable();
-            $table->boolean('is_expired');
-            $table->boolean('is_valid');
-            $table->integer('user_id');
-            $table->tinyInteger('type');
+            $table->string('type'); //received, expended
+            $table->string('from');
+            $table->integer('to');
+            $table->enum('via', ['Wallet', 'Credit Card']);
             $table->timestamps();
         });
     }
@@ -33,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payments');
+        Schema::dropIfExists('transactions');
     }
 };
