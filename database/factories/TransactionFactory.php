@@ -18,7 +18,6 @@ class TransactionFactory extends Factory
     {
         return [
             'amount' => fake()->randomFloat(2, 100, 2000),
-            'type' => fake()->randomElement(['received', 'expended']),
             'from' => fake()->randomElement([fake()->email(), 20]),
             'to' => fake()->randomElement([19, 20]),
             'via' => fake()->randomElement(['Credit Card', 'Wallet'])
