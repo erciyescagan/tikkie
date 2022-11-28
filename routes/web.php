@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/payment/{hash}', [PaymentController::class, 'request'])->name('payment.request');
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,9 +25,6 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('', [PaymentController::class, 'create'])->name('payment.create');
-Route::post('/payment/store', [PaymentController::class, 'store'])->name('payment.store');
-Route::get('/payment/{hash}', [PaymentController::class, 'request'])->name('payment.request');
 
 Route::post('/payment/pay', [PaymentController::class, 'pay'])->name('payment.pay');
 

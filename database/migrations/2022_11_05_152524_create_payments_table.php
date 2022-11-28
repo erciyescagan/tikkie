@@ -16,12 +16,15 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->float('amount');
+            $table->float('amount_per_person');
+            $table->integer('number_of_people');
             $table->string('link');
             $table->dateTime('expiration_date')->nullable();
             $table->boolean('is_expired');
             $table->boolean('is_valid');
             $table->integer('user_id');
             $table->tinyInteger('type');
+            $table->integer('counter')->default(0);
             $table->timestamps();
         });
     }
