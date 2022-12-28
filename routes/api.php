@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\WithdrawController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,4 +38,5 @@ Route::group(['middleware' => ['auth:api', 'cors', 'json.response']], function (
     Route::get('/receivedViaWallet', [TransactionController::class, 'receivedViaWallet']);
     Route::get('/expendedViaCreditCard', [TransactionController::class, 'expendedViaCreditCard']);
     Route::get('/expendedViaWallet', [TransactionController::class, 'expendedViaWallet']);
+    Route::post('/withdraw', [WithdrawController::class, 'store'])->name('withdraw');
 });

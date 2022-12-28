@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Payment;
+use App\Models\Withdraw;
 use App\Observers\PaymentObserver;
+use App\Observers\WithdrawObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Payment::observe(PaymentObserver::class);
+        Withdraw::observe(WithdrawObserver::class);
 
     }
 }

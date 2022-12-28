@@ -23,18 +23,16 @@ class PaymentController extends Controller
             ]);
 
             Json::setJson($request);
-            $this->user = $request->user();
             $this->calculateAmount($this->getType());
         }
 
 
     }
 
-    public function store()
+    public function store(Request $request)
     {
 
-        $user = $this->user;
-
+        $user = $request->user();
         $payment = new Payment();
         $payment->amount = $this->amount;
         $payment->amount_per_person = $this->amount_per_person;
