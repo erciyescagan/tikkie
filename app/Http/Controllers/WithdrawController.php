@@ -37,9 +37,12 @@ class WithdrawController extends Balance
             $withdraw->amount = $this->getAmount();
             $withdraw->user_id = $request->user()->id;
             $withdraw->status = 'open';
-            $withdraw->save();
-            return $withdraw;
+            if ($withdraw->save()){
+                return response()->json(['status' => 'success', 'statusCode' => 200,'message' => 'Para çekme talebiniz başarıyla oluşturuldu!', 'data' => ['withdraw' => $withdraw], 200]);
+            }
         }
+        return response()->json(['status' => 'error', 'statusCode' => 500, 'message' => 'Bakiyeniz bu işlem için yetersiz.'], 500);
+
     }
 
 }

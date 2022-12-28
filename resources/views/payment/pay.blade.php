@@ -9,5 +9,6 @@ Güncel Bakiyeniz: {{\Illuminate\Support\Facades\Auth::user()->account->wallet_b
 <form action="{{route('payment.pay', ['hash' => Request::segment(2)])}}" method="POST">
     @csrf
     @method('POST')
+    <input type="text" name="from" value="" placeholder="from">
     <input type="submit" value="Öde">
 </form>

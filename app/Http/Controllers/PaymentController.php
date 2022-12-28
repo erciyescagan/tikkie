@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
-    private $user, $number_of_people, $amount, $type, $amount_per_person;
+    private $number_of_people, $amount, $type, $amount_per_person;
 
     public function __construct(Request $request)
     {
@@ -45,7 +45,7 @@ class PaymentController extends Controller
 
         $payment->save();
 
-        return $payment;
+        return response()->json(['status' => 'success', 'statusCode' => 200, 'message' => 'İsteğiniz başarıyla oluşturuldu', 'data' => ['payment' => $payment]], 200);
     }
 
     public function request($hash)
@@ -63,20 +63,6 @@ class PaymentController extends Controller
         return redirect()->to('/my/account');
 
     }
-
-
-    private function setAmount(){$this->amount = Json::getJson()['amount'];}
-
-    private function getAmount() : float {$this->setAmount();return $this->amount;}
-
-    private function setType(){$this->type = Json::getJson()['type'];}
-
-    private function getType() : int {$this->setType();return $this->type;}
-
-    private function setNumberOfPeople(){$this->number_of_people = Json::getJson()['number_of_people'];}
-
-    private function getNumberOfPeople() :int {$this->setNumberOfPeople(); return $this->number_of_people;}
-
     private function calculateAmount($type): void
     {
         switch ($type){
@@ -94,6 +80,18 @@ class PaymentController extends Controller
         $this->amount = $amount;
         $this->amount_per_person = $amount_per_person;
     }
+
+    private function setAmount(){$this->amount = Json::getJson()['amount'];}
+
+    private function getAmount() : float {$this->setAmount();return $this->amount;}
+
+    private function setType(){$this->type = Json::getJson()['type'];}
+
+    private function getType() : int {$this->setType();return $this->type;}
+
+    private function setNumberOfPeople(){$this->number_of_people = Json::getJson()['number_of_people'];}
+
+    private function getNumberOfPeople() :int {$this->setNumberOfPeople(); return $this->number_of_people;}
 
 
 }

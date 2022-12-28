@@ -35,7 +35,7 @@ class PaymentObserver
         if ($payment->isDirty('counter')){
             $transaction = new Transaction();
             $transaction->amount = $payment->amount_per_person ;
-            $transaction->from = Auth::id();
+            $transaction->from = request()->has('from') ? request()->get('from') : Auth::id();
             $transaction->to = $payment->user_id;
             $transaction->via = Auth::check() ? 'wallet' : 'credit card';
             $transaction->save();
