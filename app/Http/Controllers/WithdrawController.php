@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Withdraw;
 use Illuminate\Http\Request;
 
-class WithdrawController extends Balance
+class WithdrawController extends Controller
 {
     private $amount;
 
@@ -32,7 +32,7 @@ class WithdrawController extends Balance
     private function getAmount() : int {$this->setAmount();return $this->amount;}
 
     public function store(Request $request){
-        if (Balance::check($request->user()->account->wallet_balance, $this->getAmount())){
+        if (Balance::check($request->user()->id, $this->getAmount())){
             $withdraw = new Withdraw();
             $withdraw->amount = $this->getAmount();
             $withdraw->user_id = $request->user()->id;

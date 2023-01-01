@@ -10,5 +10,8 @@ Güncel Bakiyeniz: {{\Illuminate\Support\Facades\Auth::user()->account->wallet_b
     @csrf
     @method('POST')
     <input type="text" name="from" value="" placeholder="from">
+    @if(\Illuminate\Support\Facades\Auth::check())
+    <input type="hidden" name="user_id" value="{{\Illuminate\Support\Facades\Auth::id()}}">
+    @endif
     <input type="submit" value="Öde">
 </form>

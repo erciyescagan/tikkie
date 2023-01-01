@@ -2,12 +2,15 @@
 
 namespace App\Observers;
 
+use App\Http\Helpers\Balance;
 use App\Models\Payment;
 use App\Models\Transaction;
 use App\Models\User;
 use http\Env\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class PaymentObserver
 {
@@ -18,10 +21,10 @@ class PaymentObserver
      * @return void
      */
 
-    public function saving(Payment $payment){
-        $bytes = Str::random(36);
-        $link = url('/payment/'.$bytes);
-        $payment->link = $link;
+    public function creating(Payment $payment){
+            $bytes = Str::random(36);
+            $link = url('/payment/'.$bytes);
+            $payment->link = $link;
 
     }
     public function created(Payment $payment)
@@ -29,15 +32,18 @@ class PaymentObserver
         //
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function updating(Payment $payment){
-        //TODO: Research how to get $request from blade on observer if there is no authenticated user.
-        //TODO: $transaction->from = $request->email, $transaction->via = "credit card"
         if ($payment->isDirty('counter')){
             $transaction = new Transaction();
-            $transaction->amount = $payment->amount_per_person ;
-            $transaction->from = request()->has('from') ? request()->get('from') : Auth::id();
+            $transaction->amount = $payment->amount_per_person;
+            $transaction->from = request()->has('from') ? request()->get('from') : request()->get('user_id');
             $transaction->to = $payment->user_id;
             $transaction->via = Auth::check() ? 'wallet' : 'credit card';
+            $transaction->payment_id = $payment->id;
             $transaction->save();
         }
 
