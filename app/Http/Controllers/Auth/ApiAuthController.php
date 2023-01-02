@@ -26,9 +26,7 @@ class ApiAuthController extends Controller
         $request['remember_token'] = Str::random(10);
         $user = User::create($request->toArray());
         $token = $user->createToken('Laravel Password Grant Client')->accessToken;
-        if ($token){
-            Account::createEmptyAccount($user->id);
-        }
+        if ($token) Account::createEmptyAccount($user->id);
         $response = ['token' => $token];
         return response($response, 200);
     }

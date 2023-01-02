@@ -14,9 +14,8 @@ class AccountController extends Controller
         $account = $request->user()->account;
         $account->iban = $request->iban;
         $account->wallet_balance = 0;
-        if($account->save()){
+        if($account->save())
             return response()->json(['message' => 'You have been created your wallet!'], 200);
-        }
     }
 
 }
