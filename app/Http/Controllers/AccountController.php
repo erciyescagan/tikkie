@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AccountRequest;
 use App\Models\Account;
 use Dotenv\Validator;
 use Illuminate\Http\Request;
@@ -9,31 +10,13 @@ use App\Http\Helpers\Json;
 
 class AccountController extends Controller
 {
-    private $user, $iban;
-    public function __construct(Request $request)
-    {
-        $this->user = $request->user();
-        Json::setJson($request);
-
-    }
-
-    public function update(Request $request){
-        $request->validate([
-            "iban" => "starts_with:TR|required|size:26",
-        ]);
-
-        $account = $this->user->account;
-        $account->iban = $this->getIban();
+    public function update(AccountRequest $request){
+        $account = $request->user()->account;
+        $account->iban = $request->iban;
         $account->wallet_balance = 0;
         if($account->save()){
             return response()->json(['message' => 'You have been created your wallet!'], 200);
         }
     }
-
-
-    private function setIban(){$this->iban = Json::getJson()['iban'];}
-
-    private function getIban(){$this->setIban(); return $this->iban;}
-
 
 }
