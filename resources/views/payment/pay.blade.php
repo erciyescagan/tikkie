@@ -9,9 +9,8 @@ Güncel Bakiyeniz: {{\Illuminate\Support\Facades\Auth::user()->account->wallet_b
 <form action="{{route('payment.pay', ['hash' => Request::segment(2)])}}" method="POST">
     @csrf
     @method('POST')
-    <input type="text" name="from" value="" placeholder="from">
-    @if(\Illuminate\Support\Facades\Auth::check())
-    <input type="hidden" name="user_id" value="{{\Illuminate\Support\Facades\Auth::id()}}">
+    @if(!\Illuminate\Support\Facades\Auth::check())
+        <input type="text" name="from" value="" placeholder="from">
     @endif
     <input type="submit" value="Öde">
 </form>

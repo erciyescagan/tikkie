@@ -22,8 +22,10 @@ class Balance
     }
 
     public static function calculate(Transaction $transaction){
-        if (self::check($transaction->from, $transaction->amount)){
+        if (is_numeric($transaction->from) && self::check($transaction->from, $transaction->amount)){
             self::calculateForPayer($transaction->from, $transaction);
+            self::calculateForPayee($transaction->to, $transaction);
+        } else if (!is_numeric($transaction->from)){
             self::calculateForPayee($transaction->to, $transaction);
         }
     }

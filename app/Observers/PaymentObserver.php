@@ -37,10 +37,11 @@ class PaymentObserver
      * @throws NotFoundExceptionInterface
      */
     public function updating(Payment $payment){
+        //TODO: Should get request if request has related keys like 'from' or 'user_id'
         if ($payment->isDirty('counter')){
             $transaction = new Transaction();
             $transaction->amount = $payment->amount_per_person;
-            $transaction->from = request()->has('from') ? request()->get('from') : request()->get('user_id');
+            $transaction->from = !is_null(request()->get('from')) ? request()->get('from') : auth()->guard('web')->id();
             $transaction->to = $payment->user_id;
             $transaction->via = Auth::check() ? 'wallet' : 'credit card';
             $transaction->payment_id = $payment->id;

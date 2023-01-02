@@ -13,8 +13,13 @@ class UserController extends Controller
     }
 
     public function account(){
-        $account = Auth::user()->account;
+        if (Auth::check()){
+            $account = Auth::user()->account;
+        } else {
+            $account = null;
+        }
         return view('user.account', ['account' => $account]);
+
     }
 
 }
