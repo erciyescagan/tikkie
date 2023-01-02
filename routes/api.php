@@ -39,8 +39,9 @@ Route::group(['middleware' => ['auth:api', 'cors', 'json.response']], function (
     Route::get('/receivedViaWallet', [TransactionController::class, 'receivedViaWallet']);
     Route::get('/expendedViaCreditCard', [TransactionController::class, 'expendedViaCreditCard']);
     Route::get('/expendedViaWallet', [TransactionController::class, 'expendedViaWallet']);
-    Route::post('/withdraw', [WithdrawController::class, 'store'])->name('withdraw');
-    Route::post('/deposit', [DepositController::class, 'store'])->name('deposit');
     Route::post('/contact/add', [ContactController::class, 'store']);
     Route::get('/contacts', [ContactController::class, 'index']);
+    Route::post('/withdraw/store', [WithdrawController::class, 'store'])->name('withdraw.store');
+    Route::post('/deposit/store', [DepositController::class, 'store'])->name('deposit.store');
+    Route::get('/deposits', [DepositController::class, 'index'])->name('deposits');
 });

@@ -11,9 +11,7 @@ class Balance
 
     public static function check($payerID, $amount) : bool{
         $walletBalance = User::find($payerID)->account->wallet_balance;
-        if ($walletBalance >= $amount){
-            return true;
-        }
+        if ($walletBalance >= $amount) return true;
         return false;
     }
 
@@ -29,9 +27,9 @@ class Balance
         if (is_numeric($transaction->from) && self::check($transaction->from, $transaction->amount)){
             self::calculateForPayer($transaction->from, $transaction);
             self::calculateForPayee($transaction->to, $transaction);
-        } else if (!is_numeric($transaction->from)){
-            self::calculateForPayee($transaction->to, $transaction);
         }
+        else if (!is_numeric($transaction->from))
+            self::calculateForPayee($transaction->to, $transaction);
     }
 
     public static function calculateForPayer($payerID, Transaction $transaction){
