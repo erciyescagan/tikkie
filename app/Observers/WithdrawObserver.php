@@ -13,6 +13,6 @@ class  WithdrawObserver
         $user = User::findOrFail($withdraw->user_id);
         $account = $user->account;
         $account->wallet_balance = Balance::withdraw($user->account->wallet_balance, $withdraw->amount);
-        $user->account->save();
+        $account->save();
     }
 }

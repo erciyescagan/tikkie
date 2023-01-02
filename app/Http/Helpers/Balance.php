@@ -17,8 +17,12 @@ class Balance
         return false;
     }
 
-    public static function withdraw($walletBalance, $amount) : int{
-        return (int)$walletBalance - (int)$amount;
+    public static function withdraw($walletBalance, $amount) : float {
+        return (float)$walletBalance - (int)$amount;
+    }
+
+    public static function deposit($walletBalance, $amount) : float {
+        return (float)$walletBalance + (float)$amount;
     }
 
     public static function calculate(Transaction $transaction){
