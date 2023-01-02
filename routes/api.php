@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Auth\ApiAuthController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TransactionController;
@@ -40,4 +41,6 @@ Route::group(['middleware' => ['auth:api', 'cors', 'json.response']], function (
     Route::get('/expendedViaWallet', [TransactionController::class, 'expendedViaWallet']);
     Route::post('/withdraw', [WithdrawController::class, 'store'])->name('withdraw');
     Route::post('/deposit', [DepositController::class, 'store'])->name('deposit');
+    Route::post('/contact/add', [ContactController::class, 'store']);
+    Route::get('/contacts', [ContactController::class, 'index']);
 });

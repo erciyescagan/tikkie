@@ -64,4 +64,8 @@ class User extends Authenticatable
     public function deposit(){
         return $this->hasMany(Deposit::class, 'user_id');
     }
+
+    public function contacts(){
+        return $this->belongsToMany(User::class, 'user_contacts', 'user_id', 'contact_id');
+    }
 }

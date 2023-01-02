@@ -6,43 +6,37 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-    private $user;
 
-    public function __construct(Request $request){
-        $this->user = $request->user();
+    public function received(Request $request){
+        return $request->user()->received()->get();
     }
 
-    public function received(){
-        return $this->user->received()->get();
+    public function expended(Request $request){
+        return $request->user()->expended()->get();
     }
 
-    public function expended(){
-        return $this->user->expended()->get();
+    public function totalReceived(Request $request){
+        return $request->user()->received()->sum('amount');
     }
 
-    public function totalReceived(){
-        return $this->user->received()->sum('amount');
+    public function totalExpended(Request $request){
+        return $request->user()->expended()->sum('amount');
     }
 
-    public function totalExpended(){
-        return $this->user->expended()->sum('amount');
+    public function receivedViaCreditCard(Request $request){
+        return $request->user()->received()->where('via', 'credit card')->get();
     }
 
-    public function receivedViaCreditCard(){
-        return $this->user->received()->where('via', 'credit card')->get();
+    public function receivedViaWallet(Request $request){
+        return $request->user()->received()->where('via', 'wallet')->get();
     }
 
-    public function receivedViaWallet(){
-        return $this->user->received()->where('via', 'wallet')->get();
+    public function expendedViaCreditCard(Request $request){
+        return $request->user()->expended()->where('via', 'credit card')->get();
     }
 
-    public function expendedViaCreditCard(){
-        return $this->user->expended()->where('via', 'credit card')->get();
+    public function expendedViaWallet(Request $request){
+        return $request->user()->expended()->where('via', 'wallet')->get();
     }
-
-    public function expendedViaWallet(){
-        return $this->user->expended()->where('via', 'wallet')->get();
-    }
-
 
 }
