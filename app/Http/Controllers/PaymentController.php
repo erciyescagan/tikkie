@@ -9,30 +9,25 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-
-class PaymentController extends Controller
+use \App\Http\Helpers\Payment as PaymentHelper;
+class PaymentController extends PaymentHelper
 {
-    private int $amountPerPerson, $amount;
-
-    public function __construct(){
-        $this->amount = 0;
-        $this->amountPerPerson = 0;
-    }
 
     public function store(PaymentRequest $request)
     {
-        $this->calculateAmount($request->type, $request->amount, $request->number_of_people);
+        PaymentHelper::calculateAmount($request);
 
         $user = $request->user();
         $payment = new Payment();
         $payment->amount = $this->amount;
         $payment->amount_per_person = $this->amountPerPerson;
-        $payment->number_of_people = $request->number_of_people;
+        $payment->number_of_people = count($request->payers) > 0 ? count($request->payers) : $request->number_of_people;
         $payment->expiration_date = null;
         $payment->type = $request->type;
         $payment->is_expired = 0;
         $payment->is_valid = 0;
         $payment->user_id = $user->id;
+        $payment->payers = count($request->payers) > 0 ? encrypt(json_encode($request->payers)) : null;
 
         $payment->save();
 
@@ -53,21 +48,6 @@ class PaymentController extends Controller
 
         return redirect()->to('/my/account');
 
-    }
-    private function calculateAmount($type, $amount, $number_of_people = null): void
-    {
-        switch ($type){
-            case 0 :
-                $amount_per_person = $amount;
-                break;
-            case 1:
-                return;
-            case 2:
-                $amount_per_person = $amount / $number_of_people;
-                break;
-        }
-        $this->amount = $amount;
-        $this->amountPerPerson = $amount_per_person;
     }
 
 }

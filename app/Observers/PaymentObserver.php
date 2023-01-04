@@ -6,8 +6,10 @@ use App\Http\Helpers\Balance;
 use App\Models\Payment;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Notifications\PaymentNotification;
 use http\Env\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -29,7 +31,14 @@ class PaymentObserver
     }
     public function created(Payment $payment)
     {
-        //
+        if (!is_null($payment->payers)){
+            $payers = json_decode(decrypt($payment->payers), true);
+            foreach ($payers as $payer){
+                Notification::send(User::find($payer), new PaymentNotification($payment, User::find($payment->user_id)));
+
+            }
+            $payment->save();
+        }
     }
 
     /**

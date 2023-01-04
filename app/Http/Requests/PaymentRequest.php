@@ -26,7 +26,7 @@ class PaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            "type" => "numeric|max:2|min:0|required_without_all:number_of_people",
+            "type" => "numeric|max:3|min:0|required_without_all:number_of_people",
             "amount" => "numeric|required",
             "number_of_people" => "nullable|numeric|min:2|required_if:type,2"
         ];
