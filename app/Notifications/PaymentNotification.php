@@ -9,6 +9,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\PusherPushNotifications\PusherChannel;
+use NotificationChannels\PusherPushNotifications\PusherMessage;
 
 class PaymentNotification extends Notification
 {
@@ -31,7 +33,7 @@ class PaymentNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return [PusherChannel::class, 'database'];
     }
 
     /**
@@ -54,6 +56,15 @@ class PaymentNotification extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
+
+    public function toPushNotification($notifiable){
+        return PusherMessage::create()
+            ->web()
+            ->badge(1)
+            ->sound('success')
+            ->body("Your {$notifiable->service} account was approved!");
+    }
+
     public function toArray($notifiable)
     {
         return [

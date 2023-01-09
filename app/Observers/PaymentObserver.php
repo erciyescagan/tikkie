@@ -34,7 +34,7 @@ class PaymentObserver
         if (!is_null($payment->payers)){
             $payers = json_decode(decrypt($payment->payers), true);
             foreach ($payers as $payer){
-                Notification::send(User::find($payer), new PaymentNotification($payment, User::find($payment->user_id)));
+                Notification::sendNow(User::find($payer), new PaymentNotification($payment, User::find($payment->user_id)));
 
             }
             $payment->save();
