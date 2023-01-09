@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
+
     public function received(){
         return Auth::guard('api')->user()->received()->get();
     }
@@ -38,6 +39,5 @@ class TransactionController extends Controller
     public function expendedViaWallet(){
         return Auth::guard('api')->user()->expended()->where('via', 'wallet')->get();
     }
-
 
 }
